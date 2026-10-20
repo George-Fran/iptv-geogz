@@ -188,26 +188,139 @@ export function normalizeCategory(rawGroup: string): string {
   if (lower.includes('music') || lower.includes('musica')) return 'Música';
   if (lower.includes('news') || lower.includes('noticia')) return 'Noticias';
   if (lower.includes('sport') || lower.includes('deporte')) return 'Deportes';
-  if (lower.includes('movie') || lower.includes('cine') || lower.includes('film')) return 'Cine & Películas';
+  if (lower.includes('movie') || lower.includes('cine') || lower.includes('film') || lower.includes('cinema')) return 'Cine & Películas';
   if (lower.includes('entertain') || lower.includes('entretenimiento')) return 'Entretenimiento';
-  if (lower.includes('kid') || lower.includes('child') || lower.includes('infantil') || lower.includes('family')) return 'Infantil & Familia';
-  if (lower.includes('animat') || lower.includes('anime')) return 'Animación';
+  if (lower.includes('kid') || lower.includes('child') || lower.includes('infantil') || lower.includes('family') || lower.includes('familia')) return 'Infantil & Familia';
+  if (lower.includes('animat') || lower.includes('anime') || lower.includes('dibujo')) return 'Animación';
   if (lower.includes('docu')) return 'Documentales';
   if (lower.includes('culture') || lower.includes('cultura') || lower.includes('educat')) return 'Cultura & Educación';
   if (lower.includes('sci') || lower.includes('ciencia') || lower.includes('tech')) return 'Ciencia & Tecnología';
-  if (lower.includes('relig') || lower.includes('reli')) return 'Religión';
+  if (lower.includes('relig') || lower.includes('reli') || lower.includes('iglesia')) return 'Religión';
   if (lower.includes('life') || lower.includes('estilo')) return 'Estilo de Vida';
-  if (lower.includes('outdoor') || lower.includes('naturaleza')) return 'Naturaleza & Aventura';
-  if (lower.includes('series') || lower.includes('show')) return 'Series';
-  if (lower.includes('comedy') || lower.includes('comedia')) return 'Comedia';
-  if (lower.includes('travel') || lower.includes('viaje')) return 'Viajes';
-  if (lower.includes('auto') || lower.includes('motor')) return 'Motor';
+  if (lower.includes('cook') || lower.includes('cocina') || lower.includes('gourmet')) return 'Cocina & Gastronomía';
+  if (lower.includes('outdoor') || lower.includes('naturaleza') || lower.includes('relax')) return 'Naturaleza & Aventura';
+  if (lower.includes('series') || lower.includes('show') || lower.includes('novela')) return 'Series';
+  if (lower.includes('comedy') || lower.includes('comedia') || lower.includes('humor')) return 'Comedia';
+  if (lower.includes('travel') || lower.includes('viaje') || lower.includes('turismo')) return 'Viajes';
+  if (lower.includes('auto') || lower.includes('motor') || lower.includes('racing')) return 'Motor';
   if (lower.includes('business') || lower.includes('finance') || lower.includes('economia')) return 'Economía';
   if (lower.includes('weather') || lower.includes('tiempo')) return 'Meteorología';
-  if (lower.includes('classic')) return 'Clásicos';
+  if (lower.includes('classic') || lower.includes('clasico')) return 'Clásicos';
+  if (lower.includes('shop') || lower.includes('compra')) return 'Compras & Variedades';
   if (lower.includes('test')) return 'Test & Calidad';
 
   return first.charAt(0).toUpperCase() + first.slice(1);
+}
+
+// Intelligent category classifier based on channel name, tvg-id and keywords
+export function detectCategoryFromName(name: string, tvgId?: string): string {
+  const text = `${name} ${tvgId || ''}`.toLowerCase();
+
+  // 1. Deportes
+  if (
+    text.match(/\b(sport|sports|deporte|deportes|futbol|fútbol|soccer|racing|f1|formula|motogp|nba|nfl|mlb|nhl|golf|tennis|tenis|espn|fox sports|tyc|gol tv|tudn|bein|ufc|fight|wrestling|boxeo|wwe|atletismo|maratón|cycl|rugby|basket|baloncesto|padel|billar|skate|surf)\b/i) ||
+    text.includes('sports') || text.includes('sport') || text.includes('deport')
+  ) {
+    return 'Deportes';
+  }
+
+  // 2. Noticias
+  if (
+    text.match(/\b(news|noticia|noticias|noticiero|24h|24 horas|24\/7|cnn|bbc|euronews|rtve 24|dw |al jazeera|france 24|c5n|tn |a24|la nacion|cronica|info|actualidad|alerta|press|journal|bloomberg|cnbc)\b/i) ||
+    text.includes('noticia') || text.includes('news')
+  ) {
+    return 'Noticias';
+  }
+
+  // 3. Música
+  if (
+    text.match(/\b(music|música|musica|musical|mtv|vh1|hits|hit |radio|fm|sound|stereo|rock|pop|jazz|dance|urban|reggaeton|salsa|cumbia|retro|vevo|viva|dj|concierto|acoustic)\b/i) ||
+    text.includes('music') || text.includes('música') || text.includes('radio')
+  ) {
+    return 'Música';
+  }
+
+  // 4. Cine & Películas
+  if (
+    text.match(/\b(cine|cinema|movie|movies|film|films|pelicula|peliculas|película|películas|hollywood|action|accion|thriller|horror|terror|paramount|warner|cinemax|star channel)\b/i) ||
+    text.includes('cinema') || text.includes('pelicul')
+  ) {
+    return 'Cine & Películas';
+  }
+
+  // 5. Infantil & Familia
+  if (
+    text.match(/\b(kid|kids|child|children|infantil|junior|disney|cartoon|toons|toon|nick|nickelodeon|anime|animacion|animación|baby|clan|panda|dibujos|family|familia|boing|pakapaka)\b/i) ||
+    text.includes('infantil') || text.includes('cartoon') || text.includes('anime')
+  ) {
+    return 'Infantil & Familia';
+  }
+
+  // 6. Documentales
+  if (
+    text.match(/\b(docu|documental|documentales|documentary|discovery|history|historia|nat geo|national geographic|geograph|wild|wildlife|animal|odisea|nature|naturaleza|planet|planeta|investigacion)\b/i) ||
+    text.includes('docu') || text.includes('discovery') || text.includes('geograph')
+  ) {
+    return 'Documentales';
+  }
+
+  // 7. Series & Telenovelas
+  if (
+    text.match(/\b(series|serie|novela|novelas|telenovela|telenovelas|dramas|sitcom|capitulo)\b/i) ||
+    text.includes('series') || text.includes('novela')
+  ) {
+    return 'Series';
+  }
+
+  // 8. Comedia & Humor
+  if (
+    text.match(/\b(comedy|comedia|humor|risa|risas|chistes|stand up|funny|gag)\b/i) ||
+    text.includes('comedia') || text.includes('comedy')
+  ) {
+    return 'Comedia';
+  }
+
+  // 9. Ciencia & Tecnología
+  if (
+    text.match(/\b(science|ciencia|ciencias|tech|tecnologia|tecnología|nasa|space|espacio|robot|future|cyber)\b/i) ||
+    text.includes('ciencia') || text.includes('nasa')
+  ) {
+    return 'Ciencia & Tecnología';
+  }
+
+  // 10. Religión & Espiritualidad
+  if (
+    text.match(/\b(relig|religion|religión|iglesia|church|god|cristian|catol|catolica|católica|gospel|enlace|fe|paz|hope|prayer|vatican|oracion|evangel|pastor|jesus|ebs)\b/i) ||
+    text.includes('iglesia') || text.includes('relig')
+  ) {
+    return 'Religión';
+  }
+
+  // 11. Estilo de Vida & Cocina
+  if (
+    text.match(/\b(life|lifestyle|estilo|estilo de vida|fashion|moda|gourmet|cocina|cooking|food|chef|recetas|hogar|home|garden|travel|viajes|turismo|aventura|decoracion)\b/i) ||
+    text.includes('gourmet') || text.includes('cocina')
+  ) {
+    return 'Estilo de Vida';
+  }
+
+  // 12. Economía & Negocios
+  if (
+    text.match(/\b(business|negocios|finance|finanzas|finanz|economia|economía|market|mercados|bolsa|dinero|invest)\b/i) ||
+    text.includes('finanz') || text.includes('econom')
+  ) {
+    return 'Economía';
+  }
+
+  // 13. Entretenimiento general
+  if (
+    text.match(/\b(entertain|entretenimiento|show|magazin|variedades|talk|espectaculo|farándula)\b/i) ||
+    text.includes('entreten')
+  ) {
+    return 'Entretenimiento';
+  }
+
+  return 'General';
 }
 
 export function parseM3U(content: string, playlistSourceUrl?: string): Channel[] {
@@ -259,6 +372,7 @@ export function parseM3U(content: string, playlistSourceUrl?: string): Channel[]
         if (isCountryPlaylist) {
           // If it's a country playlist like index.country.m3u, group-title IS the country
           currentChannel.country = COUNTRY_NAMES_MAP[rawGroupLower] || rawGroup;
+          // Keep group as General for now; it will be intelligently classified below once name is extracted
           currentChannel.group = 'General';
         } else if (COUNTRY_NAMES_MAP[rawGroupLower]) {
           currentChannel.country = COUNTRY_NAMES_MAP[rawGroupLower];
@@ -268,7 +382,13 @@ export function parseM3U(content: string, playlistSourceUrl?: string): Channel[]
         }
       }
 
-      // 3. Extract tvg-country (e.g. tvg-country="AR" or tvg-country="ar;es")
+      // 3. Extract tvg-category if present in line
+      const catMatch = line.match(/tvg-category="([^"]*)"/i);
+      if (catMatch && catMatch[1]) {
+        currentChannel.group = normalizeCategory(catMatch[1]);
+      }
+
+      // 4. Extract tvg-country (e.g. tvg-country="AR" or tvg-country="ar;es")
       const countryMatch = line.match(/tvg-country="([^"]*)"/i);
       if (countryMatch && countryMatch[1]) {
         const rawCodes = countryMatch[1].split(/[;,]/);
@@ -284,7 +404,7 @@ export function parseM3U(content: string, playlistSourceUrl?: string): Channel[]
         }
       }
 
-      // 4. Extract tvg-id (e.g. "Telefe.ar" or "C5N.ar@SD" or "RTVE24h.es")
+      // 5. Extract tvg-id (e.g. "Telefe.ar" or "C5N.ar@SD" or "RTVE24h.es")
       const idMatch = line.match(/tvg-id="([^"]*)"/i);
       if (idMatch && idMatch[1]) {
         currentChannel.tvgId = idMatch[1];
@@ -301,13 +421,13 @@ export function parseM3U(content: string, playlistSourceUrl?: string): Channel[]
         }
       }
 
-      // 5. Extract tvg-language
+      // 6. Extract tvg-language
       const langMatch = line.match(/tvg-language="([^"]*)"/i);
       if (langMatch && langMatch[1]) {
         currentChannel.language = langMatch[1];
       }
 
-      // 6. Extract Channel Name
+      // 7. Extract Channel Name
       const lastCommaIndex = line.lastIndexOf(',');
       if (lastCommaIndex !== -1) {
         const namePart = line.substring(lastCommaIndex + 1).trim();
@@ -321,7 +441,7 @@ export function parseM3U(content: string, playlistSourceUrl?: string): Channel[]
         }
       }
 
-      // 7. If country is still Global, check name for parenthesis or bracket tags like (Argentina), [AR]
+      // 8. If country is still Global, check name for parenthesis or bracket tags like (Argentina), [AR]
       if (currentChannel.country === 'Global' && currentChannel.name) {
         const tagMatch = currentChannel.name.match(/[\(\[]\s*([a-zA-Z\s]+)\s*[\)\]]/);
         if (tagMatch && tagMatch[1]) {
@@ -336,17 +456,27 @@ export function parseM3U(content: string, playlistSourceUrl?: string): Channel[]
         }
       }
 
+      // 9. FINAL CATEGORY RESOLUTION:
+      // If group is still 'General' or empty, detect the real category from the extracted channel name & tvgId!
+      if (!currentChannel.group || currentChannel.group === 'General') {
+        const detected = detectCategoryFromName(currentChannel.name || '', currentChannel.tvgId);
+        if (detected !== 'General') {
+          currentChannel.group = detected;
+        }
+      }
+
     } else if (!line.startsWith('#') && (line.startsWith('http://') || line.startsWith('https://') || line.includes('.m3u8') || line.includes('.ts'))) {
       if (currentChannel) {
         currentChannel.url = line;
         channels.push(currentChannel as Channel);
         currentChannel = null;
       } else {
+        const fallbackName = `Transmisión ${channels.length + 1}`;
         channels.push({
           id: `ch-${Date.now()}-${Math.random().toString(36).substring(2, 7)}-${i}`,
-          name: `Transmisión ${channels.length + 1}`,
+          name: fallbackName,
           url: line,
-          group: 'General',
+          group: detectCategoryFromName(fallbackName),
           country: fallbackCountryFromUrl || 'Global',
           isCustom: true
         });
