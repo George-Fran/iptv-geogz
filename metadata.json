@@ -1,0 +1,6 @@
+{
+  "name": "IPTV Player & Streaming Studio",
+  "description": "Reproductor IPTV ultra veloz con HLS de baja latencia, catálogo de canales abiertos legales, afinador de buffer y guía de arquitectura técnica.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
